@@ -30,15 +30,16 @@ class MinHeap {
       return
     }
 
-    let currentIndex = index
-    let parentIndex = this.getParentIndexOf(currentIndex)
+    let parentIndex = this.getParentIndexOf(index)
 
-    while (this.data[currentIndex] < this.data[parentIndex]) {
-      swap(currentIndex, parentIndex)
-      currentIndex = parentIndex
-      parentIndex = this.getParentIndexOf(currentIndex)
+    while (this.data[index] < this.data[parentIndex]) {
+        // While loop is ok when parentIndex = 0, so value is null.
+        // An number is always greater than null, so while loop will not run.
+      swap(index, parentIndex)
+      index = parentIndex
+      parentIndex = this.getParentIndexOf(index)
     }
-      // Note: could do this recursively as well
+      // Note: could do this recursively as well. 
 
   }
 
@@ -62,7 +63,11 @@ class MinHeap {
       let leftChild = this.data[this.getLeftChildIndexOf(index)]
       let rightChild = this.data[this.getRightChildIndexOf(index)]
 
-      if (this.isLeafNode(index) || (current <= leftChild && current <= rightChild){
+      if (this.isLeafNode(index){
+        break
+      }
+
+      if (current <= leftChild && current <= rightChild) {
         break
       }
 
@@ -91,8 +96,7 @@ class MinHeap {
   }
 
   isLeafNode(index) {
-    let heapSize = this.data.length
-    return index > Math.floor(heapSize/2) // Note: has to be greater than, not greater than or equal to. A leaf has no children
+    return index >= this.data.length/2 // Note: no need for Math.floor!
   }
 
   swap(index1, index2) {
