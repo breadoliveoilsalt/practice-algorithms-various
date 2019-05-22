@@ -35,11 +35,11 @@ class MinHeap {
     while (this.data[index] < this.data[parentIndex]) {
         // While loop is ok when parentIndex = 0, so value is null.
         // An number is always greater than null, so while loop will not run.
-      swap(index, parentIndex)
+      this.swap(index, parentIndex)
       index = parentIndex
       parentIndex = this.getParentIndexOf(index)
     }
-      // Note: could do this recursively as well. 
+      // Note: could do this recursively as well.
 
   }
 
@@ -104,5 +104,39 @@ class MinHeap {
     this.data[index1] = this.data[index2]
     this.data[index2] = temp
   }
+
+}
+
+
+testMinHeap1() {
+
+  let heap = new MinHeap()
+
+  heap.insert(100)
+  heap.insert(50)
+  heap.insert(120)
+  heap.insert(70)
+  heap.insert(60)
+  heap.insert(150)
+  heap.insert(20)
+
+  console.log("Here's your heap: ", heap.data)
+
+  return heap
+
+
+}
+
+testMinHeap2() {
+  let heap = testMinHeap1()
+  heap.extractMin()
+  console.log("Here's your heap, first extraction: ", heap.data)
+  heap.insert(1000)
+  heap.insert(10)
+  console.log("Here's your heap, after further additions: ", heap.data)
+  heap.extractMin()
+  console.log("Here's your heap, second extraction: ", heap.data)
+  heap.extractMin()
+  console.log("Here's your heap, third extraction: ", heap.data)
 
 }
