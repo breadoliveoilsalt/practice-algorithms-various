@@ -1,160 +1,9 @@
-/*
-- This is from Pramp
-- Set variables for
-  result = ""
-  unique character count
-  count map
-  head index = 0
-- Initialize map with each letter in arr, and set count to 0
-- Iterate through string with index being tail index
-  - If count map does not have arr[tailIndex], continue...we only care about noting when our iterator is going over a character in arr
-  - if count map has arr[tailIndex], if count is 0, then unique character count ++, and then update count map
-  - have a while loop -> while unique character count == arr.length
-    - if length of window === length of arr, then return the substring
+// Goal is to find shortest substring in longString that contains all characters of shortString - not exactly shortString
 
-- update this. <= DONE - SEE BELOW
-
-
-
-- Major lesson here:
-  - the charMap plus uniqueCounter keep you from having to iterate through array each time
-    - you need the countMap to tell you whether the uniqueCharCount should go up or down.
-    - and you need the uniqueCharCounter to know whether your substring is good or not.
-    - move tail, check if you've got something unique
-    - while you've got all the characters in the array (ie, while uniqueCharCount === arr.length), then you can examine head, test if moving it should downgrade uniqueCharCount (by looking at Map), and then move head
-
-  - This is all about how to look for a list in a string
-
-***  See refactored code below!
-*/
-
-let arr = ['x','y','z']
-let str = "xyyzyzyx"
-
-
-function getShortestSubstring1(arr, str) {
-  let headIndex = 0
-  let uniqueCounter = 0               // counts whether all the characters in arr are present in current substring
-  let countMap = {}
-
-  let output = ""
-
-  for (let i = 0; i < arr.length; i++) {
-    let char = arr[i]
-    countMap[char] = 0
-  }
-
-  // console.log(`CountMap: ${countMap}`) - confirmed countMap works
-
-  for (let tailIndex = 0; tailIndex < str.length; tailIndex++) {
-    let tailChar = str[tailIndex]
-
-    console.log(`
-      tailChar: ${tailChar},
-      head: ${headIndex},
-      uniqueCounter: ${uniqueCounter},
-      `
-    )
-    // FOR LATER: CONSIDER REVISING THIS SO THAT IT MIRRORS CODE IN WHILE LOOP -- IE, IF TAILCHAR IS IN HASH MAP, THEN DO THIS STUFF
-    // if (!countMap[tailChar]) { // THIS IS 'TRUE' IN JS WHEN COUNT IS 0!! THE INVERSE OF FALSE. SO A BIG BUG.
-
-    if (countMap[tailChar] === undefined) { // need this be 0 is falsey in JS!
-      continue                          // b/c we only char about characters in the arr
-    }
-
-    let tailCount = countMap[tailChar]
-    if (tailCount === 0) {
-      uniqueCounter += 1
-    }
-    countMap[tailChar] += 1
-
-    while (uniqueCounter === arr.length) {          // once you've got all the necessary characters,
-                                                    // see if you've hit jackpot and short circuit, or adjust output
-      let tempLength = tailIndex - headIndex + 1    // Then, start moving headIndex and testing what you've got in while loop
-
-      if (tempLength === arr.length) {
-        output = str.substring(headIndex, tailIndex + 1)
-        return output
-      }
-
-      if (output > tempLength || output === "") {
-        output = str.substring(headIndex, tailIndex + 1)
-        debugger
-      }
-
-      let headChar = str[headIndex]
-      if (countMap[headChar] !== undefined) {
-        if (countMap[headChar] === 1) {
-          uniqueCounter -= 1
-        }
-        countMap[headChar] -= 1
-      }
-
-      headIndex += 1
-    }
-
-  }
-
-  return output
-}
-
-
-// ----------------
-// REFACTORING CODE ABOVE - works!
-// ----------------
-
-function getShortestSubstring2(arr, str) {
-  let headIndex = 0
-  let uniqueCounter = 0               // counts whether all the characters in arr are present in current substring
-  let countMap = {}
-
-  let output = ""
-
-  for (let i = 0; i < arr.length; i++) {
-    let char = arr[i]
-    countMap[char] = 0
-  }
-
-  for (let tailIndex = 0; tailIndex < str.length; tailIndex++) {
-    let tailChar = str[tailIndex]
-
-    if (countMap[tailChar] !== undefined) {
-      if (countMap[tailChar] === 0) {
-        uniqueCounter += 1
-      }
-      countMap[tailChar] += 1
-    }
-
-    while (uniqueCounter === arr.length) {          // once you've got all the necessary characters,
-                                                    // see if you've hit jackpot and short circuit, or adjust output
-      let tempLength = tailIndex - headIndex + 1    // Then, start moving headIndex and testing what you've got in while loop
-      if (tempLength === arr.length) {
-        output = str.substring(headIndex, tailIndex + 1)
-        return output
-      }
-
-      if (output > tempLength || output === "") {
-        output = str.substring(headIndex, tailIndex + 1)
-      }
-
-      let headChar = str[headIndex]
-      if (countMap[headChar] !== undefined) {
-        if (countMap[headChar] === 1) {
-          uniqueCounter -= 1
-        }
-        countMap[headChar] -= 1
-      }
-
-      headIndex += 1
-    }
-
-  }
-
-  return output
-}
+let shortString = "xyz"
+let longString = "xyyzyzyx"
 
 /*
-
 // in future: see if you can update for comparing two strings.  See here:
 https://www.geeksforgeeks.org/find-the-smallest-window-in-a-string-containing-all-characters-of-another-string/
 
@@ -243,6 +92,8 @@ public class GFG
 
 function getShortestSubstring3(longString, shortString) {
 
+  // You'll want to check first if longString < shortString, in which case, return false
+
   let start = 0
   let startIndex = -1
   let minLength = Number.POSITIVE_INFINITY
@@ -251,19 +102,45 @@ function getShortestSubstring3(longString, shortString) {
   let shortStringCountMap = {}
   let longStringCountMap = {}
 
+    // Initialize hash for counting short string characters and count them. Initialize hash for long string count of short string characters
   for (let i = 0; i < shortString.length; i++) {
-    shortStringCountMap[shortString[i]] = 0
+    let char = shortString[i]
+
+    if (shortStringCountMap[char] === undefined) {
+      shortStringCountMap[char] = 1
+    } else {
+      shortStringCountMap[char] += 1
+    }
+
+    longStringCountMap[char] = 0
   }
+
+    // Start traversing longString
 
   for (let j = 0; j < longString.length; j++) {
 
     // strategy is to increase count if count in short string is see if your window
 
-    if (longStringCountMap[longString[j]] === undefined) {
-      longStringCountMap[longString[j]] = 1
-    } else {
-      longStringCountMap[longString[j]] += 1
+    let charLS = longString[j]
+
+      // If the character appears in the short string count
+    if (longStringCountMap[charLS] !== undefined) {
+
+      longStringCountMap[charLS] += 1
+
+      if (longStringCountMap[charLS] <= shortStringCountMap[charLS]){
+        uniqueCount += 1
+      }
+
+      while (uniqueCount === shortString.length) {
+
+          // up to here
+
+      }
     }
+
+
+
 
 
 
