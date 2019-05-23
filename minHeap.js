@@ -49,7 +49,9 @@ class MinHeap {
 
     this.data[1] = this.data.pop()
 
+    this.bubbleDownFrom(1)
 
+    return min
 
   }
 
@@ -63,7 +65,9 @@ class MinHeap {
       let leftChild = this.data[this.getLeftChildIndexOf(index)]
       let rightChild = this.data[this.getRightChildIndexOf(index)]
 
-      if (this.isLeafNode(index){
+      debugger
+
+      if (this.isLeafNode(index)){
         break
       }
 
@@ -72,7 +76,8 @@ class MinHeap {
       }
 
       // Swap with the lesser child
-      if (leftChild < rightChild) {
+      if (leftChild < rightChild || rightChild === undefined) {
+          // Note: I only added the || above after some testing. Not sure if more rigorous conditions needed here.
         this.swap(index, this.getLeftChildIndexOf(index))
         index = this.getLeftChildIndexOf(index)
       } else {
@@ -108,7 +113,7 @@ class MinHeap {
 }
 
 
-testMinHeap1() {
+function testMinHeap1() {
 
   let heap = new MinHeap()
 
@@ -127,7 +132,7 @@ testMinHeap1() {
 
 }
 
-testMinHeap2() {
+function testMinHeap2() {
   let heap = testMinHeap1()
   heap.extractMin()
   console.log("Here's your heap, first extraction: ", heap.data)
