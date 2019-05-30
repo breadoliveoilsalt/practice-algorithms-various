@@ -57,6 +57,7 @@ class MinHeap {
 
   bubbleDownFrom(index) {
     // some sources say swap with left child before right; some say swap with larger child; some say swap with lesser child.
+    // Must pick smaller one so smaller one is at the root (and every sub root)
 
 
     while (true) {
@@ -71,7 +72,7 @@ class MinHeap {
         break
       }
 
-      if (current <= leftChild && current <= rightChild) {
+      if (current <= leftChild && current <= rightChild) { 
         break
       }
 
