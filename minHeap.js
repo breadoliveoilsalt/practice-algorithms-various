@@ -72,11 +72,11 @@ class MinHeap {
         break
       }
 
-      if (current <= leftChild && current <= rightChild) { 
+      if (current <= leftChild && current <= rightChild) {
         break
       }
 
-      // Swap with the lesser child
+      // Swap with the lesser child -- this way the parent of any sub-tree is always the minimum of that tree
       if (leftChild < rightChild || rightChild === undefined) {
           // Note: I only added the || above after some testing. Not sure if more rigorous conditions needed here.
         this.swap(index, this.getLeftChildIndexOf(index))
